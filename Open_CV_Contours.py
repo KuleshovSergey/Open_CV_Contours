@@ -12,19 +12,18 @@ img_rgb = cv2.GaussianBlur(img_rgb, gaussian_blur_size, 0)
 # Преобразовать изображение в оттенки серого
 img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 # Преобразуем в чёрнобелое изображение
-T, img_gray = cv2.threshold(img_gray, 60, 255, cv2.THRESH_BINARY)
+T, img_gray = cv2.threshold(img_gray, 50, 255, cv2.THRESH_BINARY)
 # Находим контуры
-contours = cv2.findContours(img_gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
-#img_res = cv2.drawContours(img_rgb, contours, -1, (0,255,0), 4)
+contours = cv2.findContours(img_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
 for cont in contours:
         #сглаживание и определение количества углов
         sm = cv2.arcLength(cont, True)
         # Если периметр контура удоблетворяет условиям обрабатываем
-        if sm > 300 and sm < 900:
+        if sm > 250 and sm < 1000:
             apd = cv2.approxPolyDP(cont, 0.1*sm, True)
-        # Если у контура 4 угла отображаем его
-        if len(apd) == 4:
-            cv2.drawContours(img_rgb, [apd], -1, (0,255,0), 4)
+            # Если у контура 4 угла отображаем его
+            if len(apd) == 4:
+                cv2.drawContours(img_rgb, [apd], -1, (0,255,0), 4)
 cv2.imwrite('result.jpg', img_rgb)
 while True:
     cv2.imshow('Result',img_rgb)
